@@ -64,8 +64,8 @@ runs:
     #       INPUT_RUN_ID: ${{ inputs.gh_run_id }}
 
     - name: Initiate execution plan
-        uses: cloudbees-io/asset-chain-utils/start-chain@v1
-        id: plan
+      uses: cloudbees-io/asset-chain-utils/start-chain@v1
+      id: plan
 
     - name: Run SCC Scan for tag generation
       uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-scc-scanner:1a81610bbb3d6e6f2c4586f21d85638e56718a70
@@ -89,8 +89,8 @@ runs:
         STEP_ID: ${{ inputs.gh_step_id }}
 
     - name: Complete execution plan
-        uses: cloudbees-io/asset-chain-utils/end-chain@v1
-        id: process-outputs
+      uses: cloudbees-io/asset-chain-utils/end-chain@v1
+      id: process-outputs
 
     # - name: Complete execution plan
     #   uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:d14621a0e281098b736a3d21cc92edd1fdc8b504
