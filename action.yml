@@ -33,6 +33,10 @@ inputs:
     description: 'STEP id of the GHA'
     required: true
 
+  event_json_path:
+    description: 'Event json path'
+    required: false
+
 runs:
   using: composite
   steps:
@@ -63,9 +67,9 @@ runs:
       uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-scc-scanner:1a81610bbb3d6e6f2c4586f21d85638e56718a70
       continue-on-error: true
       env:
-          RUN_ID: ${{ cloudbees.run_id }}
-          JOB_ID: ${{ job.id }}
-          STEP_ID: ${{ step.internal.id }}
+          RUN_ID: ${{ inputs.gh_run_id }}
+          JOB_ID: ${{ inputs.gh_job_id }}
+          STEP_ID: ${{ inputs.gh_step_id }}
       run: /app/plugin-scc-scanner -mode single
 
     - name: Run gosec compliance plugin
