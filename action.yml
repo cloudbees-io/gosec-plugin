@@ -40,18 +40,18 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Generate sha and ref 
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:d14621a0e281098b736a3d21cc92edd1fdc8b504
-      with:
-        entrypoint: assets-plugin-chain-utils
-        args: get-commit-info
-      env:
-         INPUT_CLOUDBEES_API_TOKEN: ${{ inputs.cb_token }}
-         INPUT_CLOUDBEES_API_URL: ${{ inputs.cb_api_url }}
-         INPUT_RUN_ID: ${{ inputs.gh_run_id }}
-         INPUT_CLOUDBEES_EVENT_PATH: /cloudbees/event.json
-         INPUT_REF: ${{ inputs.ref }}
-         INPUT_WORKSPACE_DIR: ${{ inputs.workspace-dir }}
+    # - name: Generate sha and ref 
+    #   uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:d14621a0e281098b736a3d21cc92edd1fdc8b504
+    #   with:
+    #     entrypoint: assets-plugin-chain-utils
+    #     args: get-commit-info
+    #   env:
+    #      INPUT_CLOUDBEES_API_TOKEN: ${{ inputs.cb_token }}
+    #      INPUT_CLOUDBEES_API_URL: ${{ inputs.cb_api_url }}
+    #      INPUT_RUN_ID: ${{ inputs.gh_run_id }}
+    #      INPUT_CLOUDBEES_EVENT_PATH: /cloudbees/event.json
+    #      INPUT_REF: ${{ inputs.ref }}
+    #      INPUT_WORKSPACE_DIR: ${{ inputs.workspace-dir }}
 
     - name: Generate reference files 
       uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:d14621a0e281098b736a3d21cc92edd1fdc8b504
