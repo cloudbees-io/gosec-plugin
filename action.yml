@@ -66,19 +66,23 @@ runs:
     - name: Run SCC Scan for tag generation
       uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-scc-scanner:1a81610bbb3d6e6f2c4586f21d85638e56718a70
       continue-on-error: true
+      with:
+        entrypoint: /app/plugin-scc-scanner
+        args: -mode single
       env:
-          RUN_ID: ${{ inputs.gh_run_id }}
-          JOB_ID: ${{ inputs.gh_job_id }}
-          STEP_ID: ${{ inputs.gh_step_id }}
-      run: /app/plugin-scc-scanner -mode single
+        RUN_ID: ${{ inputs.gh_run_id }}
+        JOB_ID: ${{ inputs.gh_job_id }}
+        STEP_ID: ${{ inputs.gh_step_id }}
 
     - name: Run gosec compliance plugin
       uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-gosec-scanner:1b2c0980e5495cc0132a3e693ba8e6ebf2c7cd71
+      with:
+        entrypoint: /app/plugin-gosec-scanner
+        args: -mode single
       env:
-          RUN_ID: ${{ inputs.gh_run_id }}
-          JOB_ID: ${{ inputs.gh_job_id }}
-          STEP_ID: ${{ inputs.gh_step_id }}
-      run: /app/plugin-gosec-scanner -mode single
+        RUN_ID: ${{ inputs.gh_run_id }}
+        JOB_ID: ${{ inputs.gh_job_id }}
+        STEP_ID: ${{ inputs.gh_step_id }}
 
     - name: Complete execution plan
       uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:d14621a0e281098b736a3d21cc92edd1fdc8b504
