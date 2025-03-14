@@ -11,6 +11,27 @@ inputs:
     description: 'Flag to mention the path where the checked out code will be present'
     required: false
     default: ''
+    
+  cb_token:
+    description: 'Token of Cloudbees'
+    required: true
+
+  cb_api_url:
+    description: 'API to publish results'
+    required: true
+    default: 'https://api.saas-preprod.beescloud.com'
+
+  gh_run_id:
+    description: 'RUN id of the GHA'
+    required: true
+
+  gh_job_id:
+    description: 'JOB id of the GHA'
+    required: true
+
+  gh_step_id:
+    description: 'STEP id of the GHA'
+    required: true
 
 runs:
   using: composite
@@ -21,9 +42,9 @@ runs:
         entrypoint: assets-plugin-chain-utils
         args: get-commit-info
       env:
-         INPUT_CLOUDBEES_API_TOKEN: ${{ cloudbees.api.token }}
-         INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
-         INPUT_RUN_ID: ${{ cloudbees.run_id }}
+         INPUT_CLOUDBEES_API_TOKEN: ${{ inputs.cb_token }}
+         INPUT_CLOUDBEES_API_URL: ${{ inputs.cb_api_url }}
+         INPUT_RUN_ID: ${{ inputs.gh_run_id }}
          INPUT_CLOUDBEES_EVENT_PATH: /cloudbees/event.json
          INPUT_REF: ${{ inputs.ref }}
          INPUT_WORKSPACE_DIR: ${{ inputs.workspace-dir }}
@@ -34,9 +55,9 @@ runs:
           entrypoint: assets-plugin-chain-utils
           args: generate-references --asset-type "CODE"
       env:
-          INPUT_CLOUDBEES_API_TOKEN: ${{ cloudbees.api.token }}
-          INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
-          INPUT_RUN_ID: ${{ cloudbees.run_id }}
+          INPUT_CLOUDBEES_API_TOKEN: ${{ inputs.cb_token }}
+          INPUT_CLOUDBEES_API_URL: ${{ inputs.cb_api_url }}
+          INPUT_RUN_ID: ${{ inputs.gh_run_id }}
 
     - name: Run SCC Scan for tag generation
       uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-scc-scanner:1a81610bbb3d6e6f2c4586f21d85638e56718a70
@@ -50,9 +71,9 @@ runs:
     - name: Run gosec compliance plugin
       uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-gosec-scanner:1b2c0980e5495cc0132a3e693ba8e6ebf2c7cd71
       env:
-          RUN_ID: ${{ cloudbees.run_id }}
-          JOB_ID: ${{ job.id }}
-          STEP_ID: ${{ step.internal.id }}
+          RUN_ID: ${{ inputs.gh_run_id }}
+          JOB_ID: ${{ inputs.gh_job_id }}
+          STEP_ID: ${{ inputs.gh_step_id }}
       run: /app/plugin-gosec-scanner -mode single
 
     - name: Complete execution plan
@@ -62,6 +83,6 @@ runs:
           entrypoint: assets-plugin-chain-utils
           args: process-outputs
       env:
-          INPUT_CLOUDBEES_API_TOKEN: ${{ cloudbees.api.token }}
-          INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
-          INPUT_RUN_ID: ${{ cloudbees.run_id }}
+          INPUT_CLOUDBEES_API_TOKEN: ${{ inputs.cb_token }}
+          INPUT_CLOUDBEES_API_URL: ${{ inputs.cb_api_url }}
+          INPUT_RUN_ID: ${{ inputs.gh_run_id }}
