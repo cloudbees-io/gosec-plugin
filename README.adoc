@@ -1,6 +1,6 @@
-= CloudBees action: Scan with Gosec
+= CloudBees action: Scan Go code with Gosec
 
-Use this action to perform static application security testing (SAST) on a repository with the Gosec scanner.
+Use this action to perform static application security testing (SAST) on Go repositories with the open-source Golang Security Checker (Gosec). Gosec inspects Go code for security problems by scanning the AST and SSA code representation.
 
 == Inputs
 
@@ -13,16 +13,15 @@ Use this action to perform static application security testing (SAST) on a repos
 | Required?
 | Description
 
-
 | `ref`
 | String
 | No
-| Specify the ref that should be checked out and archived.
+| The ref of the code to be scanned.
 
 | `workspace-dir`
 | String
 | No
-| Specify the path where the checked out code will be present for scanning.
+| The path of the code to be scanned.
 
 |===
 
@@ -34,10 +33,7 @@ In your YAML file, add:
 ----
 
       - name: Scan with Gosec
-        uses: https://github.com/cloudbees-io/gosec-plugin@v1
-        with:
-          ref: main
-
+        uses: cloudbees-io/gosec-plugin@v1
 ----
 
 == License
