@@ -11,12 +11,28 @@ inputs:
     description: 'Flag to mention the path where the checked out code will be present'
     required: false
     default: ''
+outputs:
+  critical-count:
+    description: A string containing the number of Critical security findings discovered during the scan.
+    value: ${{steps.process-outputs.outputs.critical-count}}
+  very-high-count:
+    description: A string containing the number of Very High security findings discovered during the scan.
+    value: ${{steps.process-outputs.outputs.very-high-count}}
+  high-count:
+    description: A string containing the number of High security findings discovered during the scan.
+    value: ${{steps.process-outputs.outputs.high-count}}
+  medium-count:
+    description: A string containing the number of Medium security findings discovered during the scan.
+    value: ${{steps.process-outputs.outputs.medium-count}}
+  low-count:
+    description: A string containing the number of Low security findings discovered during the scan.
+    value: ${{steps.process-outputs.outputs.low-count}}
 
 runs:
   using: composite
   steps:
     - name: Generate sha and ref 
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:d14621a0e281098b736a3d21cc92edd1fdc8b504
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:2312e778e9df96bc098dde0a12c6c1857c8eec54
       with:
         entrypoint: assets-plugin-chain-utils
         args: get-commit-info
@@ -29,7 +45,7 @@ runs:
          INPUT_WORKSPACE_DIR: ${{ inputs.workspace-dir }}
 
     - name: Generate reference files 
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:f725443f3373e3939a1e0258f994fe6a46cf76dc
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:2312e778e9df96bc098dde0a12c6c1857c8eec54
       with:
           entrypoint: assets-plugin-chain-utils
           args: generate-references --asset-type "CODE"
@@ -56,7 +72,7 @@ runs:
       run: /app/plugin-gosec-scanner -mode single
 
     - name: Complete execution plan
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:f725443f3373e3939a1e0258f994fe6a46cf76dc
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:2312e778e9df96bc098dde0a12c6c1857c8eec54
       id: process-outputs
       with:
           entrypoint: assets-plugin-chain-utils
