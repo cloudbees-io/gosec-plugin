@@ -1,6 +1,8 @@
 = CloudBees action: Scan Go code with Gosec
 
-Use this action to perform static application security testing (SAST) on Go repositories with the open-source Golang Security Checker (Gosec). Gosec inspects Go code for security problems by scanning the AST and SSA code representation.
+Use this action to perform static application security testing (SAST) on Go repositories with the open-source Golang Security Checker (Gosec).
+Gosec inspects Go code for security problems by scanning the AST and SSA code representation.
+You can also use the action output as a quality gate for the next step or job in your workflow.
 
 == Inputs
 
@@ -25,15 +27,167 @@ Use this action to perform static application security testing (SAST) on Go repo
 
 |===
 
-== Usage example
+== Outputs
 
-In your YAML file, add:
+[cols="2a,1a,4a",options="header"]
+.Output details
+|===
+
+| Output name
+| Data type
+| Description
+
+| `critical-count`
+| String
+| The number of *Critical* security findings discovered during the scan.
+
+| `very-high-count`
+| String
+| The number of *Very high* security findings discovered during the scan.
+
+| `high-count`
+| String
+| The number of *High* security findings discovered during the scan.
+
+| `medium-count`
+| String
+| The number of *Medium* security findings discovered during the scan.
+
+| `low-count`
+| String
+| The number of *Low* security findings discovered during the scan.
+
+|===
+
+== Usage examples
+
+=== Basic example
+
+The following is a basic example of using the action:
 
 [source,yaml]
 ----
 
       - name: Scan with Gosec
         uses: cloudbees-io/gosec-plugin@v1
+----
+
+
+=== Using the action output
+
+Access the output values in downstream steps and jobs using the `outputs` link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/dsl-syntax/contexts[context].
+
+Use the output in your workflow as follows, where <action_step_ID> is the action step ID, and <severity> is an output parameter name, such as `critical-count`:
+
+[source,yaml]
+----
+${{steps.<action_step_ID>.outputs.<severity>}}
+----
+
+The following example uses the action output in a downstream step of the same job:
+
+[source,yaml,role="default-expanded"]
+----
+
+name: my-workflow
+kind: workflow
+apiVersion: automation.cloudbees.io/v1alpha1
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  scm-token-own: read
+  scm-token-org: read
+  id-token: write
+
+jobs:
+  gosec-scan-job:
+    steps:
+      - name: check out source code
+        uses: cloudbees-io/checkout@v1
+
+      - id: gosec-step
+        name: gosec scan
+        uses: cloudbees-io/gosec-plugin@v1
+
+      - name: source dir examine
+        uses: docker://golang:1.20.3-alpine3.17
+        shell: sh
+        run: |
+          ls -latR /cloudbees/workspace
+
+      - id: print-outputs-from-gosec-step
+        name: print outputs from upstream gosec step
+        uses: docker://alpine:latest
+        run: |
+            #printing all outputs
+            echo "Outputs from upstream gosec step:"
+            echo "Critical count: ${{steps.gosec-step.outputs.critical-count}}"
+            echo "Very high count: ${{steps.gosec-step.outputs.very-high-count}}"
+            echo "High count: ${{steps.gosec-step.outputs.high-count}}"
+            echo "Medium count: ${{steps.gosec-step.outputs.medium-count}}"
+            echo "Low count: ${{steps.gosec-step.outputs.low-count}}"
+
+
+----
+
+The following example uses the action output in a downstream job:
+
+[source,yaml,role="default-expanded"]
+----
+
+name: my-workflow
+kind: workflow
+apiVersion: automation.cloudbees.io/v1alpha1
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  scm-token-own: read
+  scm-token-org: read
+  id-token: write
+
+jobs:
+  job1:
+    outputs:
+      gosec-job-output-critical: ${{ steps.gosec-step.outputs.critical-count }}
+      gosec-job-output-very-high: ${{ steps.gosec-step.outputs.very-high-count }}
+      gosec-job-output-high: ${{ steps.gosec-step.outputs.high-count }}
+      gosec-job-output-medium: ${{ steps.gosec-step.outputs.medium-count }}
+      gosec-job-output-low: ${{ steps.gosec-step.outputs.low-count }}
+    steps:
+      - name: check out source code
+        uses: cloudbees-io/checkout@v1
+        with:
+          repository: my-gh-repo-org/my-repo
+          ref: main
+          token: ${{ secrets.GIT_PAT }}
+
+      - id: gosec-step
+        name: gosec scan
+        uses: cloudbees-io/gosec-plugin@v1
+
+  job2:
+    needs: job1
+    steps:
+      - id: print-outputs-from-job1
+        name: print outputs from upstream job1
+        uses: docker://alpine:latest
+        run: |
+          # Printing all outputs
+          echo "Outputs from upstream gosec job:"
+          echo "Critical count: ${{ needs.job1.outputs.gosec-job-output-critical }}"
+          echo "Very high count: ${{ needs.job1.outputs.gosec-job-output-very-high }}"
+          echo "High count: ${{ needs.job1.outputs.gosec-job-output-high }}"
+          echo "Medium count: ${{ needs.job1.outputs.gosec-job-output-medium }}"
+          echo "Low count: ${{ needs.job1.outputs.gosec-job-output-low }}"
+
 ----
 
 == License
@@ -44,6 +198,6 @@ link:https://opensource.org/license/mit/[MIT license].
 == References
 
 * Learn more about link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/actions[using actions in CloudBees workflows].
-* Learn about link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/[the CloudBees platform].
+* Learn about link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/[CloudBees platform].
 
 
