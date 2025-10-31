@@ -32,7 +32,7 @@ runs:
   using: composite
   steps:
     - name: Generate sha and ref 
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:2312e778e9df96bc098dde0a12c6c1857c8eec54
+      uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-plugin-chain-utils:1f95fd45dd03fa6f363ff95cb20142fe4b7d83c4
       with:
         entrypoint: assets-plugin-chain-utils
         args: get-commit-info
