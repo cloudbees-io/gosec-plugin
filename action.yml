@@ -64,7 +64,7 @@ runs:
       run: /app/plugin-scc-scanner -mode single
 
     - name: Run gosec compliance plugin
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-gosec-scanner:98da9672f3391f4b20a9bd8090ca438658a2da39
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-gosec-scanner:b21ddfe60cc66e8ffed60d89da6e50bd4dcd5660
       env:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
