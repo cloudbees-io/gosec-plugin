@@ -86,4 +86,7 @@ runs:
           INPUT_RUN_ID: ${{ cloudbees.run_id }}
 
     - name: Get policy subject
-      run: echo '${{ steps.process-outputs.outputs.policy-subject }}' | jq .
+      uses: docker://alpine:latest
+      shell: sh
+      run: |
+        echo '${{ steps.process-outputs.outputs.policy-subject }}' | jq .
