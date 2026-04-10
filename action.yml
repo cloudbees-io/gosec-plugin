@@ -27,6 +27,9 @@ outputs:
   low-count:
     description: A string containing the number of Low security findings discovered during the scan.
     value: ${{steps.process-outputs.outputs.low-count}}
+  policy-subject:
+    description: A json value containing the details about the vulnerability scan summary & details.
+    value: ${{steps.process-outputs.outputs.policy-subject}}
 
 runs:
   using: composite
@@ -72,7 +75,7 @@ runs:
       run: /app/plugin-gosec-scanner -mode single
 
     - name: Complete execution plan
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:81b0453072476e33ca097de87ba13c5127b45f74
+      uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-plugin-chain-utils:a2814f8beeffe20f476ab1b9b6daf1b15516be96
       id: process-outputs
       with:
           entrypoint: assets-plugin-chain-utils
@@ -81,3 +84,6 @@ runs:
           INPUT_CLOUDBEES_API_TOKEN: ${{ cloudbees.api.token }}
           INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
           INPUT_RUN_ID: ${{ cloudbees.run_id }}
+
+    - name: Get policy subject
+      run: echo '${{ steps.process-outputs.outputs.policy-subject }}' | jq .
