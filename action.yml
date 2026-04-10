@@ -89,4 +89,4 @@ runs:
       uses: docker://alpine:latest
       shell: sh
       run: |
-        echo '${{ steps.process-outputs.outputs.policy-subject }}' | jq .
+        echo '${{ steps.process-outputs.outputs.policy-subject }}'
