@@ -27,12 +27,15 @@ outputs:
   low-count:
     description: A string containing the number of Low security findings discovered during the scan.
     value: ${{steps.process-outputs.outputs.low-count}}
+  policy-subject:
+    description: A json value containing the details about the vulnerability scan summary & details.
+    value: ${{steps.process-outputs.outputs.policy-subject}}
 
 runs:
   using: composite
   steps:
     - name: Generate sha and ref 
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:81b0453072476e33ca097de87ba13c5127b45f74
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:ee88c66b03775d32cb0b69417e1a75ea68cb58ca
       with:
         entrypoint: assets-plugin-chain-utils
         args: get-commit-info
@@ -45,7 +48,7 @@ runs:
          INPUT_WORKSPACE_DIR: ${{ inputs.workspace-dir }}
 
     - name: Generate reference files 
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:81b0453072476e33ca097de87ba13c5127b45f74
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:ee88c66b03775d32cb0b69417e1a75ea68cb58ca
       with:
           entrypoint: assets-plugin-chain-utils
           args: generate-references --asset-type "CODE"
@@ -72,7 +75,7 @@ runs:
       run: /app/plugin-gosec-scanner -mode single
 
     - name: Complete execution plan
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:81b0453072476e33ca097de87ba13c5127b45f74
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:ee88c66b03775d32cb0b69417e1a75ea68cb58ca
       id: process-outputs
       with:
           entrypoint: assets-plugin-chain-utils
