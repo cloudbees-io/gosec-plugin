@@ -84,3 +84,24 @@ runs:
           INPUT_CLOUDBEES_API_TOKEN: ${{ cloudbees.api.token }}
           INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
           INPUT_RUN_ID: ${{ cloudbees.run_id }}
+
+    - id: print-policy-subject
+      name: Print Policy subject
+      uses: docker://alpine:latest
+      run: |
+          ls -la "$CLOUDBEES_OUTPUTS"
+
+          echo "=== Files in $CLOUDBEES_OUTPUTS ==="                                                                                                                              
+          find "$CLOUDBEES_OUTPUTS" -type f | while read file; do                                                                                                               
+            echo ""                                                                                                                                                               
+            echo "File: $file"                                                                                                                                                    
+            cat "$file"                                                                                                                                                           
+            echo "---"                                                                                                                                                            
+          done
+
+          if [ -f "$CLOUDBEES_OUTPUTS/policy-subject" ]; then                                                                                                                     
+            echo "Policy subject content:"                                                                                                                                        
+            cat "$CLOUDBEES_OUTPUTS/policy-subject"                                                                                                                               
+          else                                                                                                                                                                    
+            echo "File not found"                                                                                                                                                 
+          fi 
