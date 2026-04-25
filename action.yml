@@ -84,3 +84,5 @@ runs:
           INPUT_CLOUDBEES_API_TOKEN: ${{ cloudbees.api.token }}
           INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
           INPUT_RUN_ID: ${{ cloudbees.run_id }}
+          INPUT_WORKSPACE_DIR: ${{ inputs.workspace-dir }}
+          
