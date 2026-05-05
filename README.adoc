@@ -57,6 +57,10 @@ You can also use the action output as a quality gate for the next step or job in
 | String
 | The number of *Low* security findings discovered during the scan.
 
+| `policy-subject`
+| JSON
+| A JSON value containing the details about the vulnerability scan summary and details.
+
 |===
 
 == Usage examples
