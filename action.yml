@@ -75,7 +75,7 @@ runs:
       run: /app/plugin-gosec-scanner -mode single
 
     - name: Complete execution plan
-      uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-plugin-chain-utils:latest
+      uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-plugin-chain-utils:65ef2f87f5690a35773f7d73f3ee9d2fdf0933b1
       id: process-outputs
       with:
           entrypoint: assets-plugin-chain-utils
