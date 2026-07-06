@@ -34,8 +34,20 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Generate sha and ref 
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:b76b5f7a853e1bca39417c87799b2fbbdd03ecb3
+    - name: Clear asset store for scan
+      uses: docker://alpine:latest
+      shell: sh
+      run: |
+        if [ -d "$CLOUDBEES_WORKSPACE/store" ]; then
+          find $CLOUDBEES_WORKSPACE/store -mindepth 2 -maxdepth 2 \
+            -type d ! -name "discovered-profile-findings" \
+            -exec rm -rf {} +
+          rm -rf $CLOUDBEES_WORKSPACE/store/binary-assets
+          rm -rf $CLOUDBEES_WORKSPACE/store/request
+        fi
+
+    - name: Generate sha and ref
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:8ffcff74b5e47eb284c2b137a00b839db558fde1
       with:
         entrypoint: assets-plugin-chain-utils
         args: get-commit-info
@@ -47,8 +59,8 @@ runs:
          INPUT_REF: ${{ inputs.ref }}
          INPUT_WORKSPACE_DIR: ${{ inputs.workspace-dir }}
 
-    - name: Generate reference files 
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:b76b5f7a853e1bca39417c87799b2fbbdd03ecb3
+    - name: Generate reference files
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:8ffcff74b5e47eb284c2b137a00b839db558fde1
       with:
           entrypoint: assets-plugin-chain-utils
           args: generate-references --asset-type "CODE"
@@ -76,7 +88,7 @@ runs:
       run: /app/plugin-gosec-scanner -mode single
 
     - name: Complete execution plan
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:b76b5f7a853e1bca39417c87799b2fbbdd03ecb3
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:8ffcff74b5e47eb284c2b137a00b839db558fde1
       id: process-outputs
       with:
           entrypoint: assets-plugin-chain-utils
