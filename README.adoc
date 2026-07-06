@@ -134,6 +134,7 @@ jobs:
             echo "High count: ${{steps.gosec-step.outputs.high-count}}"
             echo "Medium count: ${{steps.gosec-step.outputs.medium-count}}"
             echo "Low count: ${{steps.gosec-step.outputs.low-count}}"
+            echo "Policy subject: ${{steps.gosec-step.outputs.policy-subject}}"
 
 
 ----
@@ -165,6 +166,7 @@ jobs:
       gosec-job-output-high: ${{ steps.gosec-step.outputs.high-count }}
       gosec-job-output-medium: ${{ steps.gosec-step.outputs.medium-count }}
       gosec-job-output-low: ${{ steps.gosec-step.outputs.low-count }}
+      gosec-job-output-policy-subject: ${{ steps.gosec-step.outputs.policy-subject }}
     steps:
       - name: check out source code
         uses: cloudbees-io/checkout@v1
@@ -191,6 +193,7 @@ jobs:
           echo "High count: ${{ needs.job1.outputs.gosec-job-output-high }}"
           echo "Medium count: ${{ needs.job1.outputs.gosec-job-output-medium }}"
           echo "Low count: ${{ needs.job1.outputs.gosec-job-output-low }}"
+          echo "Policy subject: ${{ needs.job1.outputs.gosec-job-output-policy-subject }}"
 
 ----
 
