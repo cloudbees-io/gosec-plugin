@@ -47,7 +47,7 @@ runs:
         fi
 
     - name: Generate sha and ref
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:8ffcff74b5e47eb284c2b137a00b839db558fde1
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:d621d66df83be71f6b4b1d1ac7ac9e0de6f6fc7d
       with:
         entrypoint: assets-plugin-chain-utils
         args: get-commit-info
@@ -59,8 +59,8 @@ runs:
          INPUT_REF: ${{ inputs.ref }}
          INPUT_WORKSPACE_DIR: ${{ inputs.workspace-dir }}
 
-    - name: Generate reference files
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:8ffcff74b5e47eb284c2b137a00b839db558fde1
+    - name: Generate reference files 
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:d621d66df83be71f6b4b1d1ac7ac9e0de6f6fc7d
       with:
           entrypoint: assets-plugin-chain-utils
           args: generate-references --asset-type "CODE"
@@ -88,7 +88,7 @@ runs:
       run: /app/plugin-gosec-scanner -mode single
 
     - name: Complete execution plan
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:8ffcff74b5e47eb284c2b137a00b839db558fde1
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:d621d66df83be71f6b4b1d1ac7ac9e0de6f6fc7d
       id: process-outputs
       with:
           entrypoint: assets-plugin-chain-utils
